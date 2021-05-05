@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import Title from "./components/Title/Title";
+import Decks from "./components/Decks/Decks";
+
 const axios = require("axios");
 
 class App extends Component {
@@ -13,7 +15,6 @@ class App extends Component {
 
   componentDidMount() {
     this.getAllDecks(this.state.mainEndpoint);
-    console.log(this.state.decks);
   }
 
   async getAllDecks() {
@@ -40,8 +41,9 @@ class App extends Component {
 
   render() {
     return (
-      <div>
-        <Title testPro={this.state.decks} />
+      <div className="container justify-content-center">
+        <Title />
+        <Decks data={this.state.decks} />
       </div>
     );
   }
