@@ -9,17 +9,17 @@ class App extends Component {
     super(props);
     this.state = {
       mainEndpoint: "http://localhost:5000/api/decks/",
-      decks: "",
+      decks: [],
     };
   }
 
   componentDidMount() {
-    this.getAllDecks(this.state.mainEndpoint);
+    this.setAllDecks(this.state.mainEndpoint);
   }
 
-  async getAllDecks() {
+  async setAllDecks() {
     try {
-      const response = await this.getDeckDataAPICall(this.state.mainEndpoint);
+      const response = await this.getAllDecks(this.state.mainEndpoint);
       this.setState({
         decks: response.data,
       });
@@ -28,13 +28,24 @@ class App extends Component {
     }
   }
 
-  getDeckDataAPICall(endpoint) {
+  getAllDecks(endpoint) {
     return new Promise((res, rej) => {
       const response = axios.get(endpoint);
       if (response != null) {
         res(response);
       } else {
         rej(new Error(`Unable to access data from ${endpoint} `));
+      }
+    });
+  }
+
+  postNewDeck(endpoint, newDeck) {
+    return new Promise((res, rej) => {
+      const response = axios.post(endpoint, newDeck);
+      if (response != null) {
+        res(response);
+      } else {
+        rej(new Error(`Unable to add new deck at ${endpoint}`));
       }
     });
   }
