@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import Title from "./components/Title/Title";
 import Decks from "./components/Decks/Decks";
+import NewDeck from "./components/NewDeck/NewDeck";
 
 const axios = require("axios");
 
@@ -50,11 +51,23 @@ class App extends Component {
     });
   }
 
+  async setNewDeck(newDeck) {
+    try {
+      const response = await this.postNewDeck(this.state.mainEndpoint, newDeck);
+      this.setState({
+        decks: [...this.state.decks, response.data],
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   render() {
     return (
       <div className="container justify-content-center">
         <Title />
         <Decks data={this.state.decks} />
+        <NewDeck setNewDeck={(deck) => this.setNewDeck(deck)} />
       </div>
     );
   }
