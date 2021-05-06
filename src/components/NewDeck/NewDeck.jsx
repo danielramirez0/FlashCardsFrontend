@@ -11,13 +11,17 @@ class NewDeck extends Component {
     };
   }
 
+  componentDidMount() {
+    this.inputTechnology.focus();
+  }
+
   handleSubmit(event) {
     event.preventDefault();
     const deck = {
       technology: this.state.technology,
       cards: this.state.cards,
     };
-    if (this.state.cards.length < 1) {
+    if (this.state.cards.length < 1 && this.state.word !== "" && this.state.definition !== "") {
       const newCard = {
         word: this.state.word,
         definition: this.state.definition,
@@ -49,6 +53,7 @@ class NewDeck extends Component {
       word: "",
       definition: "",
     });
+    this.inputWord.focus();
   }
 
   render() {
@@ -56,7 +61,7 @@ class NewDeck extends Component {
       <>
         <form onSubmit={(e) => this.handleSubmit(e)}>
           <div className="form-group row">
-            <label htmlFor="inputTechnology" className="col=sm-2 col-form-label">
+            <label htmlFor="inputTechnology" className="col-sm-2 col-form-label">
               Name of Deck:
             </label>
             <div className="col-sm-10">
@@ -68,12 +73,30 @@ class NewDeck extends Component {
                 value={this.state.technology}
                 id="inputTechnology"
                 placeholder="Enter technology name for the new deck!"
+                ref={(input) => {
+                  this.inputTechnology = input;
+                }}
               />
             </div>
           </div>
           <div className="input-group">
-            <span className="input-group-text">(Optional) Add card(s)</span>
-            <input type="text" className="form-control" name="word" onChange={(e) => this.handleChange(e)} value={this.state.word} id="inputWord" placeholder="Enter word to add" />
+            <label htmlFor="inputCard" className="col-sm-2 col-form-label">
+              Add card with Deck (Optional)
+            </label>
+            <span id="inputCard" className="input-group-text">
+              Word:
+            </span>
+            <input
+              type="text"
+              className="form-control"
+              name="word"
+              onChange={(e) => this.handleChange(e)}
+              value={this.state.word}
+              id="inputWord"
+              placeholder="Enter word to add"
+              ref={(input) => (this.inputWord = input)}
+            />
+            <span className="input-group-text">Definition:</span>
             <input
               type="text"
               className="form-control"
@@ -83,10 +106,11 @@ class NewDeck extends Component {
               id="inputDefinition"
               placeholder="Enter definition for word"
             />
-            <button type="button" onClick={() => this.updateNewDeckCards()}>
+            <button type="button" className="btn btn-outline-success" onClick={() => this.updateNewDeckCards()}>
               Add another card
             </button>
           </div>
+          <h6>Note: Additional cards can be added afterwards as well</h6>
           <div className="form-group row">
             <div className="col-sm-10 ">
               <button type="submit" className="btn btn-primary">
