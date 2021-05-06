@@ -2,10 +2,15 @@ import React from "react";
 
 const Card = (props) => {
   return (
-    <div className="card">
+    <div onClick={() => props.flipCard()} className="card">
       <div className="cover">
-        <h1 className="title">{props.card.word}</h1>
-        <h4 className="description">{props.card.definition}</h4>
+        {props.showAnswer === false ? (
+          <h1 className="title">
+            {props.card != null ? props.card.word : `This deck has no cards`}
+          </h1>
+        ) : (
+          <p className="description">{props.card != null ? props.card.definition : `Add some!`}</p>
+        )}
       </div>
     </div>
   );

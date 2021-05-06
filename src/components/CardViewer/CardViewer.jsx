@@ -8,7 +8,7 @@ const CardViewer = (props) => {
         <button onClick={() => props.previousCard()}>Previous Card</button>
       </div>
       <div className="col-md-4">
-        <Card card={props.card} />
+        <Card flipCard={props.flipCard} card={props.card} showAnswer={props.showAnswer} />
       </div>
       <div className="col-md-4">
         <button onClick={() => props.nextCard()}>Next Card</button>

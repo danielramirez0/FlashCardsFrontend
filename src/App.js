@@ -16,6 +16,7 @@ class App extends Component {
       showCard: false,
       activeDeck: {},
       activeCard: 0,
+      showAnswer: false,
       activeCards: [],
     };
   }
@@ -24,10 +25,29 @@ class App extends Component {
     this.setAllDecks(this.state.mainEndpoint);
   }
 
-  toggleVisibility(component) {
-    this.setState({
-      [component]: !this.state[component],
-    });
+  toggleVisibility(components) {
+    switch (components.length) {
+      case 1:
+        this.setState({
+          [components[0]]: !this.state[components[0]],
+        });
+        break;
+      case 2:
+        this.setState({
+          [components[0]]: !this.state[components[0]],
+          [components[1]]: !this.state[components[1]],
+        });
+        break;
+      case 3:
+        this.setState({
+          [components[0]]: !this.state[components[0]],
+          [components[1]]: !this.state[components[1]],
+          [components[2]]: !this.state[components[2]],
+        });
+        break;
+      default:
+        break;
+    }
   }
 
   async setAllDecks() {
@@ -110,6 +130,12 @@ class App extends Component {
     });
   }
 
+  flipCard() {
+    this.setState({
+      showAnswer: !this.state.showAnswer,
+    });
+  }
+
   goToNextCard() {
     let tempCardNumber = this.state.activeCard;
     tempCardNumber++;
@@ -135,6 +161,7 @@ class App extends Component {
       const response = await this.getDeckCards(this.state.mainEndpoint, deckID);
       console.log(response.data);
       this.setState({
+        activeDeck: deckID,
         activeCards: response.data,
         showCard: true,
       });
@@ -147,9 +174,27 @@ class App extends Component {
     return (
       <div className="container justify-content-center">
         <Title />
-        <Decks data={this.state.decks} callDeleteDeck={(id) => this.callDeleteDeck(id)} toggleVisibility={(comp) => this.toggleVisibility(comp)} setCardViewer={(id) => this.setCardViewer(id)} />
-        {this.state.showNewDeck === true ? <NewDeck setNewDeck={(deck) => this.setNewDeck(deck)} toggleVisibility={(comp) => this.toggleVisibility(comp)} /> : null}
-        {this.state.showCard === true ? <CardViewer card={this.state.activeCards[this.state.activeCard]} nextCard={() => this.goToNextCard()} previousCard={() => this.goToPreviousCard()} /> : null}
+        <Decks
+          data={this.state.decks}
+          callDeleteDeck={(id) => this.callDeleteDeck(id)}
+          toggleVisibility={(components) => this.toggleVisibility(components)}
+          setCardViewer={(id) => this.setCardViewer(id)}
+        />
+        {this.state.showNewDeck === true ? (
+          <NewDeck
+            setNewDeck={(deck) => this.setNewDeck(deck)}
+            toggleVisibility={(components) => this.toggleVisibility(components)}
+          />
+        ) : null}
+        {this.state.showCard === true ? (
+          <CardViewer
+            card={this.state.activeCards[this.state.activeCard]}
+            nextCard={() => this.goToNextCard()}
+            previousCard={() => this.goToPreviousCard()}
+            flipCard={() => this.flipCard()}
+            showAnswer={this.state.showAnswer}
+          />
+        ) : null}
       </div>
     );
   }
