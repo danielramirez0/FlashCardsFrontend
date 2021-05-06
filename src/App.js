@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import Title from "./components/Title/Title";
 import Decks from "./components/Decks/Decks";
 import NewDeck from "./components/NewDeck/NewDeck";
+import CardViewer from "./components/CardViewer/CardViewer";
 
 const axios = require("axios");
 
@@ -118,12 +119,37 @@ class App extends Component {
     this.setState({ activeCard: tempCardNumber });
   }
 
+  getDeckCards(endpoint, deckID) {
+    return new Promise((res, rej) => {
+      const response = axios.get(`${endpoint}/${deckID}/cards`);
+      if (response != null) {
+        res(response);
+      } else {
+        rej(new Error(`Unable to delete deck at ${endpoint} with ID ${deckID}`));
+      }
+    });
+  }
+
+  async setCardViewer(deckID) {
+    try {
+      const response = await this.getDeckCards(this.state.mainEndpoint, deckID);
+      console.log(response.data);
+      this.setState({
+        activeCards: response.data,
+        showCard: true,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   render() {
     return (
       <div className="container justify-content-center">
         <Title />
-        <Decks data={this.state.decks} callDeleteDeck={(id) => this.callDeleteDeck(id)} toggleVisibility={(comp) => this.toggleVisibility(comp)} />
+        <Decks data={this.state.decks} callDeleteDeck={(id) => this.callDeleteDeck(id)} toggleVisibility={(comp) => this.toggleVisibility(comp)} setCardViewer={(id) => this.setCardViewer(id)} />
         {this.state.showNewDeck === true ? <NewDeck setNewDeck={(deck) => this.setNewDeck(deck)} toggleVisibility={(comp) => this.toggleVisibility(comp)} /> : null}
+        {this.state.showCard === true ? <CardViewer card={this.state.activeCards[this.state.activeCard]} nextCard={() => this.goToNextCard()} previousCard={() => this.goToPreviousCard()} /> : null}
       </div>
     );
   }

@@ -10,7 +10,9 @@ const Decks = (props) => {
             <div className="card-body">
               <h5 className="card-title">{deck.technology}</h5>
               {/* <p className="card-text">{deck.technology}</p> */}
-              <button className="btn btn-outline-primary">Study {deck.technology}</button>
+              <button type="button" className="btn btn-outline-primary" onClick={() => props.setCardViewer(deck._id)}>
+                Study {deck.technology}
+              </button>
               <button type="button" className="btn btn-outline-danger" onClick={() => props.callDeleteDeck(deck._id)}>
                 Delete
               </button>
