@@ -18,6 +18,10 @@ class NewDeck extends Component {
       cards: this.state.cards,
     };
     this.props.setNewDeck(deck);
+    this.setState({
+      technology: "",
+      cards: [],
+    });
   }
 
   handleChange(event) {
@@ -37,7 +41,6 @@ class NewDeck extends Component {
       word: "",
       definition: "",
     });
-    console.log(this.state.cards);
   }
 
   render() {
@@ -46,7 +49,7 @@ class NewDeck extends Component {
         <form onSubmit={(e) => this.handleSubmit(e)}>
           <div className="form-group row">
             <label htmlFor="inputTechnology" className="col=sm-2 col-form-label">
-              Name of Technology:
+              Name of Deck:
             </label>
             <div className="col-sm-10">
               <input
@@ -56,7 +59,7 @@ class NewDeck extends Component {
                 onChange={(e) => this.handleChange(e)}
                 value={this.state.technology}
                 id="inputTechnology"
-                placeholder="Enter technology name for new deck!"
+                placeholder="Enter technology name for the new deck!"
               />
             </div>
           </div>
