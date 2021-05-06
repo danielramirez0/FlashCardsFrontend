@@ -8,6 +8,7 @@ class NewDeck extends Component {
       cards: [],
       word: "",
       definition: "",
+      showAddCards: false,
     };
   }
 
@@ -43,7 +44,7 @@ class NewDeck extends Component {
     });
   }
 
-  updateNewDeckCards() {
+  addMoreCards() {
     const newCard = {
       word: this.state.word,
       definition: this.state.definition,
@@ -52,6 +53,7 @@ class NewDeck extends Component {
       cards: [...this.state.cards, newCard],
       word: "",
       definition: "",
+      showAddCards: true,
     });
     this.inputWord.focus();
   }
@@ -106,11 +108,22 @@ class NewDeck extends Component {
               id="inputDefinition"
               placeholder="Enter definition for word"
             />
-            <button type="button" className="btn btn-outline-success" onClick={() => this.updateNewDeckCards()}>
+            <button type="button" className="btn btn-outline-success" onClick={() => this.addMoreCards()}>
               Add another card
             </button>
           </div>
-          <h6>Note: Additional cards can be added afterwards as well</h6>
+          {this.state.showAddCards === true ? <h6 className="text-center">CARDS THAT WILL BE ADDED WITH NEW DECK</h6> : null}
+          <ul className="text-center">
+            {this.state.cards.map((card, index) => (
+              <div className="text-center" key={index}>
+                <label className="text-center">WORD:</label>
+                <span className="text-center"> {card.word}, </span>
+                <label className="text-center"> DEFINITION: </label>
+                <span className="text-center"> {card.definition} </span>
+              </div>
+            ))}
+          </ul>
+          <p className="text-center">NOTE: Additional cards can be added afterwards as well</p>
           <div className="form-group row">
             <div className="col-sm-10 ">
               <button type="submit" className="btn btn-primary">

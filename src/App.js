@@ -12,6 +12,10 @@ class App extends Component {
       mainEndpoint: "http://localhost:5000/api/decks/",
       decks: [],
       showNewDeck: false,
+      showCard: false,
+      activeDeck: {},
+      activeCard: 0,
+      activeCards: [],
     };
   }
 
@@ -92,6 +96,26 @@ class App extends Component {
     } catch (error) {
       console.log(error);
     }
+  }
+
+  goToPreviousCard() {
+    let tempCardNumber = this.state.activeCard;
+    tempCardNumber--;
+    if (tempCardNumber < 0) {
+      tempCardNumber = this.state.activeCards.length - 1;
+    }
+    this.setState({
+      activeCard: tempCardNumber,
+    });
+  }
+
+  goToNextCard() {
+    let tempCardNumber = this.state.activeCard;
+    tempCardNumber++;
+    if (tempCardNumber === this.state.activeCards.length) {
+      tempCardNumber = 0;
+    }
+    this.setState({ activeCard: tempCardNumber });
   }
 
   render() {
