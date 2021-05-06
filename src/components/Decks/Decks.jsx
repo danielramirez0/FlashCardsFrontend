@@ -17,7 +17,9 @@ const Decks = (props) => {
             </div>
           </div>
         ))}
-        <button className="btn btn-outline-secondary">New Deck</button>
+        <button type="button" className="btn btn-outline-secondary" onClick={() => props.toggleVisibility("showNewDeck")}>
+          New Deck
+        </button>
       </div>
     </div>
   );

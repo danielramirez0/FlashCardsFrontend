@@ -13,15 +13,23 @@ class NewDeck extends Component {
 
   handleSubmit(event) {
     event.preventDefault();
-    let deck = {
+    const deck = {
       technology: this.state.technology,
       cards: this.state.cards,
     };
+    if (this.state.cards.length < 1) {
+      const newCard = {
+        word: this.state.word,
+        definition: this.state.definition,
+      };
+      deck.cards = [...deck.cards, newCard];
+    }
     this.props.setNewDeck(deck);
     this.setState({
       technology: "",
       cards: [],
     });
+    this.props.toggleVisibility("showNewDeck");
   }
 
   handleChange(event) {
@@ -76,7 +84,7 @@ class NewDeck extends Component {
               placeholder="Enter definition for word"
             />
             <button type="button" onClick={() => this.updateNewDeckCards()}>
-              Add card
+              Add another card
             </button>
           </div>
           <div className="form-group row">

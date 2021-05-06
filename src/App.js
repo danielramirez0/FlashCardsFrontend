@@ -11,11 +11,18 @@ class App extends Component {
     this.state = {
       mainEndpoint: "http://localhost:5000/api/decks/",
       decks: [],
+      showNewDeck: false,
     };
   }
 
   componentDidMount() {
     this.setAllDecks(this.state.mainEndpoint);
+  }
+
+  toggleVisibility(component) {
+    this.setState({
+      [component]: !this.state[component],
+    });
   }
 
   async setAllDecks() {
@@ -91,8 +98,8 @@ class App extends Component {
     return (
       <div className="container justify-content-center">
         <Title />
-        <Decks data={this.state.decks} callDeleteDeck={(id) => this.callDeleteDeck(id)} />
-        <NewDeck setNewDeck={(deck) => this.setNewDeck(deck)} />
+        <Decks data={this.state.decks} callDeleteDeck={(id) => this.callDeleteDeck(id)} toggleVisibility={(comp) => this.toggleVisibility(comp)} />
+        {this.state.showNewDeck === true ? <NewDeck setNewDeck={(deck) => this.setNewDeck(deck)} toggleVisibility={(comp) => this.toggleVisibility(comp)} /> : null}
       </div>
     );
   }
