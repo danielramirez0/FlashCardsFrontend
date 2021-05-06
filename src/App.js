@@ -25,27 +25,18 @@ class App extends Component {
     this.setAllDecks(this.state.mainEndpoint);
   }
 
-  toggleVisibility(components) {
-    switch (components.length) {
-      case 1:
+  toggleVisibility(component) {
+    switch (component) {
+      case "showNewDeck":
         this.setState({
-          [components[0]]: !this.state[components[0]],
-        });
-        break;
-      case 2:
-        this.setState({
-          [components[0]]: !this.state[components[0]],
-          [components[1]]: !this.state[components[1]],
-        });
-        break;
-      case 3:
-        this.setState({
-          [components[0]]: !this.state[components[0]],
-          [components[1]]: !this.state[components[1]],
-          [components[2]]: !this.state[components[2]],
+          [component]: !this.state[component],
+          showCard: false,
         });
         break;
       default:
+        this.setState({
+          [component]: !this.state[component],
+        });
         break;
     }
   }
@@ -127,6 +118,7 @@ class App extends Component {
     }
     this.setState({
       activeCard: tempCardNumber,
+      showAnswer: false,
     });
   }
 
@@ -142,28 +134,33 @@ class App extends Component {
     if (tempCardNumber === this.state.activeCards.length) {
       tempCardNumber = 0;
     }
-    this.setState({ activeCard: tempCardNumber });
+    this.setState({
+      activeCard: tempCardNumber,
+      showAnswer: false,
+    });
   }
 
-  getDeckCards(endpoint, deckID) {
+  getDeckCards(endpoint, deck) {
     return new Promise((res, rej) => {
-      const response = axios.get(`${endpoint}/${deckID}/cards`);
+      const response = axios.get(`${endpoint}/${deck._id}/cards`);
       if (response != null) {
         res(response);
       } else {
-        rej(new Error(`Unable to delete deck at ${endpoint} with ID ${deckID}`));
+        rej(new Error(`Unable to delete deck at ${endpoint} with ID ${deck._id}`));
       }
     });
   }
 
-  async setCardViewer(deckID) {
+  async setCardViewer(deck) {
     try {
-      const response = await this.getDeckCards(this.state.mainEndpoint, deckID);
-      console.log(response.data);
+      const response = await this.getDeckCards(this.state.mainEndpoint, deck);
       this.setState({
-        activeDeck: deckID,
+        activeDeck: deck,
         activeCards: response.data,
+        activeCard: 0,
         showCard: true,
+        showNewDeck: false,
+        showAnswer: false,
       });
     } catch (error) {
       console.log(error);
@@ -173,27 +170,33 @@ class App extends Component {
   render() {
     return (
       <div className="container justify-content-center">
-        <Title />
+        <Title type="Main" text="FLASH CARD STUDY TOOL" />
         <Decks
           data={this.state.decks}
           callDeleteDeck={(id) => this.callDeleteDeck(id)}
-          toggleVisibility={(components) => this.toggleVisibility(components)}
-          setCardViewer={(id) => this.setCardViewer(id)}
+          toggleVisibility={(component) => this.toggleVisibility(component)}
+          setCardViewer={(deck) => this.setCardViewer(deck)}
         />
         {this.state.showNewDeck === true ? (
           <NewDeck
             setNewDeck={(deck) => this.setNewDeck(deck)}
-            toggleVisibility={(components) => this.toggleVisibility(components)}
+            toggleVisibility={(component) => this.toggleVisibility(component)}
           />
         ) : null}
         {this.state.showCard === true ? (
-          <CardViewer
-            card={this.state.activeCards[this.state.activeCard]}
-            nextCard={() => this.goToNextCard()}
-            previousCard={() => this.goToPreviousCard()}
-            flipCard={() => this.flipCard()}
-            showAnswer={this.state.showAnswer}
-          />
+          <>
+            <Title extratext="Currently studying:" />
+            <Title type="Subtitle" subtext={this.state.activeDeck.technology} />
+            <CardViewer
+              card={this.state.activeCards[this.state.activeCard]}
+              nextCard={() => this.goToNextCard()}
+              previousCard={() => this.goToPreviousCard()}
+              flipCard={() => this.flipCard()}
+              showAnswer={this.state.showAnswer}
+              totalCards={this.state.activeCards.length}
+              cardIndex={this.state.activeCard + 1}
+            />
+          </>
         ) : null}
       </div>
     );

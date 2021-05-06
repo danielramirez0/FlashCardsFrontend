@@ -13,7 +13,7 @@ const Decks = (props) => {
               <button
                 type="button"
                 className="btn btn-outline-primary"
-                onClick={() => props.setCardViewer(deck._id)}
+                onClick={() => props.setCardViewer(deck)}
               >
                 Study {deck.technology}
               </button>
@@ -30,7 +30,7 @@ const Decks = (props) => {
         <button
           type="button"
           className="btn btn-outline-secondary"
-          onClick={() => props.toggleVisibility(["showNewDeck"])}
+          onClick={() => props.toggleVisibility("showNewDeck")}
         >
           New Deck
         </button>

@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import Title from "../Title/Title";
 
 class NewDeck extends Component {
   constructor(props) {
@@ -18,22 +19,24 @@ class NewDeck extends Component {
 
   handleSubmit(event) {
     event.preventDefault();
-    const deck = {
-      technology: this.state.technology,
-      cards: this.state.cards,
-    };
-    if (this.state.cards.length < 1 && this.state.word !== "" && this.state.definition !== "") {
-      const newCard = {
-        word: this.state.word,
-        definition: this.state.definition,
+    if (this.state.technology !== "") {
+      const deck = {
+        technology: this.state.technology,
+        cards: this.state.cards,
       };
-      deck.cards = [...deck.cards, newCard];
+      if (this.state.cards.length < 1 && this.state.word !== "" && this.state.definition !== "") {
+        const newCard = {
+          word: this.state.word,
+          definition: this.state.definition,
+        };
+        deck.cards = [...deck.cards, newCard];
+      }
+      this.props.setNewDeck(deck);
+      this.setState({
+        technology: "",
+        cards: [],
+      });
     }
-    this.props.setNewDeck(deck);
-    this.setState({
-      technology: "",
-      cards: [],
-    });
     this.props.toggleVisibility("showNewDeck");
   }
 
@@ -61,6 +64,7 @@ class NewDeck extends Component {
   render() {
     return (
       <>
+        <Title type="Subtitle" subtext="Add New Deck Form" />
         <form onSubmit={(e) => this.handleSubmit(e)}>
           <div className="form-group row">
             <label htmlFor="inputTechnology" className="col-sm-2 col-form-label">
@@ -108,11 +112,17 @@ class NewDeck extends Component {
               id="inputDefinition"
               placeholder="Enter definition for word"
             />
-            <button type="button" className="btn btn-outline-success" onClick={() => this.addMoreCards()}>
+            <button
+              type="button"
+              className="btn btn-outline-success"
+              onClick={() => this.addMoreCards()}
+            >
               Add another card
             </button>
           </div>
-          {this.state.showAddCards === true ? <h6 className="text-center">CARDS THAT WILL BE ADDED WITH NEW DECK</h6> : null}
+          {this.state.showAddCards === true ? (
+            <h6 className="text-center">CARDS THAT WILL BE ADDED WITH NEW DECK</h6>
+          ) : null}
           <ul className="text-center">
             {this.state.cards.map((card, index) => (
               <div className="text-center" key={index}>

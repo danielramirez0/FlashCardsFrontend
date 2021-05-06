@@ -5,13 +5,18 @@ const Card = (props) => {
     <div onClick={() => props.flipCard()} className="card">
       <div className="cover">
         {props.showAnswer === false ? (
-          <h1 className="title">
+          <h1 className="title text-center">
             {props.card != null ? props.card.word : `This deck has no cards`}
           </h1>
         ) : (
-          <p className="description">{props.card != null ? props.card.definition : `Add some!`}</p>
+          <p className="description text-center">
+            {props.card != null ? props.card.definition : `Add some!`}
+          </p>
         )}
       </div>
+      <p className="text-center">
+        {props.cardIndex}/{props.totalCards}
+      </p>
     </div>
   );
 };
