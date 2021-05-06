@@ -13,6 +13,7 @@ class App extends Component {
       mainEndpoint: "http://localhost:5000/api/decks/",
       decks: [],
       showNewDeck: false,
+      showNewCard: false,
       showCard: false,
       activeDeck: {},
       activeCard: 0,
@@ -167,6 +168,29 @@ class App extends Component {
     }
   }
 
+  postNewCard(endpoint, activeDeck, newCard) {
+    return new Promise((res, rej) => {
+      const response = axios.post(`${endpoint}/${activeDeck._id}/cards`, newCard);
+      if (response != null) {
+        res(response);
+      } else {
+        rej(new Error(`Unable to add new card at ${endpoint}`));
+      }
+    });
+  }
+
+  async setNewCard(newCard) {
+    try {
+      const response = await this.postNewCard(this.state.mainEndpoint, newCard);
+      this.setState({
+        activeCards: [response.data],
+        activeCard: this.state.activeCards.length + 1,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   render() {
     return (
       <div className="container justify-content-center">
@@ -195,6 +219,8 @@ class App extends Component {
               showAnswer={this.state.showAnswer}
               totalCards={this.state.activeCards.length}
               cardIndex={this.state.activeCard + 1}
+              setNewCard={() => this.setNewCard()}
+              toggleVisibility={(component) => this.toggleVisibility(component)}
             />
           </>
         ) : null}
