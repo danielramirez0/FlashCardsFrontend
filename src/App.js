@@ -3,6 +3,7 @@ import Title from "./components/Title/Title";
 import Decks from "./components/Decks/Decks";
 import NewDeck from "./components/NewDeck/NewDeck";
 import CardViewer from "./components/CardViewer/CardViewer";
+import CardCreator from "./components/CardCreator/CardCreator";
 
 const axios = require("axios");
 
@@ -76,16 +77,18 @@ class App extends Component {
   }
 
   addMoreCards() {
-    const newCard = {
-      word: this.state.word,
-      definition: this.state.definition,
-    };
-    this.setState({
-      cards: [...this.state.cards, newCard],
-      word: "",
-      definition: "",
-      showAddCards: true,
-    });
+    if (this.state.word !== "" && this.state.definition !== "") {
+      const newCard = {
+        word: this.state.word,
+        definition: this.state.definition,
+      };
+      this.setState({
+        cards: [...this.state.cards, newCard],
+        word: "",
+        definition: "",
+        showAddCards: true,
+      });
+    }
     // this.inputWord.focus();
   }
 
@@ -102,8 +105,18 @@ class App extends Component {
         this.setState({
           [component]: !this.state[component],
           showCard: false,
+          activeDeck: {},
+          activeCards: [],
         });
         break;
+      case "showNewCard":
+        this.setState({
+          // [component]: !this.state[component],
+          showNewCard: true,
+          showCard: false,
+        });
+        break;
+
       default:
         this.setState({
           [component]: !this.state[component],
@@ -303,6 +316,19 @@ class App extends Component {
               toggleVisibility={(component) => this.toggleVisibility(component)}
             />
           </>
+        ) : null}
+        {this.state.showNewCard === true ? (
+          <CardCreator
+            setNewDeck={(deck) => this.setNewDeck(deck)}
+            toggleVisibility={(component) => this.toggleVisibility(component)}
+            handleChange={(ev) => this.handleChange(ev)}
+            handleSubmit={(ev) => this.handleSubmit(ev)}
+            addMoreCards={() => this.addMoreCards()}
+            showAddCards={this.state.showAddCards}
+            cards={this.state.cards}
+            word={this.state.word}
+            definition={this.state.definition}
+          />
         ) : null}
       </div>
     );
