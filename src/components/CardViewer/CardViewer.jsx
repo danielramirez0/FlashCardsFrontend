@@ -5,11 +5,16 @@ import Button from "../Button/Button";
 const CardViewer = (props) => {
   return (
     <>
-      <div className="row row-spacer">
+      <div className="row row-spacer text-center">
         <div className="col-sm-2">
-          <button onClick={() => props.previousCard()}>Previous Card</button>
+          <Button
+            btnType="button"
+            btnStyle="btn btn-outline-dark"
+            clickAction={props.previousCard}
+            text="Previous Card"
+          />
         </div>
-        <div className="col-md-4">
+        <div className="col-md-6">
           <Card
             flipCard={props.flipCard}
             card={props.card}
@@ -19,7 +24,12 @@ const CardViewer = (props) => {
           />
         </div>
         <div className="col-sm-2">
-          <button onClick={() => props.nextCard()}>Next Card</button>
+          <Button
+            btnType="button"
+            btnStyle="btn btn-outline-dark"
+            clickAction={props.nextCard}
+            text="Next Card"
+          />
         </div>
       </div>
       <Button
