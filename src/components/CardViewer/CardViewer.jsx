@@ -29,6 +29,13 @@ const CardViewer = (props) => {
         useParams="showNewCard"
         text="Add new cards"
       />
+      <Button
+        btnType="button"
+        btnStyle="btn btn-outline-warning"
+        clickAction={props.toggleVisibility}
+        useParams="showDecks"
+        text="Switch Decks"
+      />
     </>
   );
 };

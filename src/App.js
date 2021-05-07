@@ -12,6 +12,7 @@ class App extends Component {
     this.state = {
       mainEndpoint: "http://localhost:5000/api/decks/",
       decks: [],
+      showDecks: true,
       showNewDeck: false,
       showNewCard: false,
       showCard: false,
@@ -19,6 +20,11 @@ class App extends Component {
       activeCard: 0,
       showAnswer: false,
       activeCards: [],
+      technology: "",
+      cards: [],
+      word: "",
+      definition: "",
+      showAddCards: false,
     };
   }
 
@@ -26,9 +32,73 @@ class App extends Component {
     this.setAllDecks(this.state.mainEndpoint);
   }
 
+  handleSubmit(event) {
+    event.preventDefault();
+    switch (event.target.name) {
+      case "submitDeck":
+        if (this.state.technology !== "") {
+          const deck = {
+            technology: this.state.technology,
+            cards: this.state.cards,
+          };
+          if (
+            this.state.cards.length < 1 &&
+            this.state.word !== "" &&
+            this.state.definition !== ""
+          ) {
+            const newCard = {
+              word: this.state.word,
+              definition: this.state.definition,
+            };
+            deck.cards = [...deck.cards, newCard];
+          }
+          this.setNewDeck(deck);
+          this.setState({
+            technology: "",
+            word: "",
+            definition: "",
+            cards: [],
+          });
+        }
+        this.toggleVisibility("showNewDeck");
+        break;
+
+      default:
+        break;
+    }
+  }
+
+  handleChange(event) {
+    event.persist();
+    this.setState({
+      [event.target.name]: event.target.value,
+    });
+  }
+
+  addMoreCards() {
+    const newCard = {
+      word: this.state.word,
+      definition: this.state.definition,
+    };
+    this.setState({
+      cards: [...this.state.cards, newCard],
+      word: "",
+      definition: "",
+      showAddCards: true,
+    });
+    // this.inputWord.focus();
+  }
+
   toggleVisibility(component) {
     switch (component) {
       case "showNewDeck":
+        this.setState({
+          [component]: !this.state[component],
+          showCard: false,
+          showDecks: !this.state.showDecks,
+        });
+        break;
+      case "showDecks":
         this.setState({
           [component]: !this.state[component],
           showCard: false,
@@ -161,6 +231,7 @@ class App extends Component {
         activeCard: 0,
         showCard: true,
         showNewDeck: false,
+        showDecks: false,
         showAnswer: false,
       });
     } catch (error) {
@@ -195,16 +266,25 @@ class App extends Component {
     return (
       <div className="container justify-content-center">
         <Title type="Main" text="FLASH CARD STUDY TOOL" />
-        <Decks
-          data={this.state.decks}
-          callDeleteDeck={(id) => this.callDeleteDeck(id)}
-          toggleVisibility={(component) => this.toggleVisibility(component)}
-          setCardViewer={(deck) => this.setCardViewer(deck)}
-        />
+        {this.state.showDecks === true ? (
+          <Decks
+            data={this.state.decks}
+            callDeleteDeck={(id) => this.callDeleteDeck(id)}
+            toggleVisibility={(component) => this.toggleVisibility(component)}
+            setCardViewer={(deck) => this.setCardViewer(deck)}
+          />
+        ) : null}
         {this.state.showNewDeck === true ? (
           <NewDeck
             setNewDeck={(deck) => this.setNewDeck(deck)}
             toggleVisibility={(component) => this.toggleVisibility(component)}
+            handleChange={(ev) => this.handleChange(ev)}
+            handleSubmit={(ev) => this.handleSubmit(ev)}
+            addMoreCards={() => this.addMoreCards()}
+            showAddCards={this.state.showAddCards}
+            cards={this.state.cards}
+            word={this.state.word}
+            definition={this.state.definition}
           />
         ) : null}
         {this.state.showCard === true ? (
