@@ -18,7 +18,8 @@ class App extends Component {
       showNewCard: false,
       showCard: false,
       activeDeck: {},
-      activeCard: 0,
+      activeCard: {},
+      activeCardIndex: 0,
       showAnswer: false,
       activeCards: [],
       technology: "",
@@ -43,7 +44,7 @@ class App extends Component {
             cards: this.state.cards,
           };
           if (
-            this.state.cards.length < 1 &&
+            this.state.cards.length >= 0 &&
             this.state.word !== "" &&
             this.state.definition !== ""
           ) {
@@ -70,7 +71,9 @@ class App extends Component {
         };
         this.setNewCard(newCard);
         this.setState({
-          activeCard: this.state.activeCards.length,
+          activeCardIndex: this.state.activeCards.length,
+          word: "",
+          definition: "",
         });
         this.toggleVisibility("showNewCard");
         break;
@@ -117,6 +120,8 @@ class App extends Component {
           showCard: false,
           activeDeck: {},
           activeCards: [],
+          activeCard: {},
+          activeCardIndex: 0,
         });
         break;
       case "showNewCard":
@@ -204,13 +209,14 @@ class App extends Component {
   }
 
   goToPreviousCard() {
-    let tempCardNumber = this.state.activeCard;
+    let tempCardNumber = this.state.activeCardIndex;
     tempCardNumber--;
     if (tempCardNumber < 0) {
       tempCardNumber = this.state.activeCards.length - 1;
     }
     this.setState({
-      activeCard: tempCardNumber,
+      activeCardIndex: tempCardNumber,
+      activeCard: this.state.activeCards[tempCardNumber],
       showAnswer: false,
     });
   }
@@ -222,13 +228,14 @@ class App extends Component {
   }
 
   goToNextCard() {
-    let tempCardNumber = this.state.activeCard;
+    let tempCardNumber = this.state.activeCardIndex;
     tempCardNumber++;
     if (tempCardNumber === this.state.activeCards.length) {
       tempCardNumber = 0;
     }
     this.setState({
-      activeCard: tempCardNumber,
+      activeCardIndex: tempCardNumber,
+      activeCard: this.state.activeCards[tempCardNumber],
       showAnswer: false,
     });
   }
@@ -250,7 +257,8 @@ class App extends Component {
       this.setState({
         activeDeck: deck,
         activeCards: response.data,
-        activeCard: 0,
+        activeCard: response.data[this.state.activeCardIndex],
+        activeCardIndex: 0,
         showCard: true,
         showNewDeck: false,
         showDecks: false,
@@ -281,7 +289,40 @@ class App extends Component {
       );
       this.setState({
         activeCards: response.data,
+        activeCard: response.data[this.state.activeCardIndex],
       });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  deleteCard(endpoint, activeDeck, activeCard) {
+    return new Promise((res, rej) => {
+      const response = axios.delete(`${endpoint}/${activeDeck._id}/cards/${activeCard._id}`);
+      if (response != null) {
+        res(response);
+      } else {
+        rej(new Error(`Unable to add new card at ${endpoint}`));
+      }
+    });
+  }
+
+  async callDeleteCard(card) {
+    try {
+      const response = await this.deleteCard(this.state.mainEndpoint, this.state.activeDeck, card);
+      if (this.state.activeCardIndex === 0) {
+        this.setState({
+          activeCards: response.data,
+          activeCard: response.data[this.state.activeCardIndex],
+          activeCardIndex: this.state.activeCardIndex,
+        });
+      } else {
+        this.setState({
+          activeCards: response.data,
+          activeCard: response.data[this.state.activeCardIndex - 1],
+          activeCardIndex: this.state.activeCardIndex - 1,
+        });
+      }
     } catch (error) {
       console.log(error);
     }
@@ -317,13 +358,15 @@ class App extends Component {
             <Title extratext="Currently studying:" />
             <Title type="Subtitle" subtext={this.state.activeDeck.technology} />
             <CardViewer
-              card={this.state.activeCards[this.state.activeCard]}
+              card={this.state.activeCards[this.state.activeCardIndex]}
+              activeCard={this.state.activeCard}
               nextCard={() => this.goToNextCard()}
               previousCard={() => this.goToPreviousCard()}
               flipCard={() => this.flipCard()}
+              callDeleteCard={(card) => this.callDeleteCard(card)}
               showAnswer={this.state.showAnswer}
               totalCards={this.state.activeCards.length}
-              cardIndex={this.state.activeCard + 1}
+              cardIndex={this.state.activeCardIndex + 1}
               setNewCard={() => this.setNewCard()}
               toggleVisibility={(component) => this.toggleVisibility(component)}
             />

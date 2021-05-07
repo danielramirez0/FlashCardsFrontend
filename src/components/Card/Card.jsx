@@ -15,7 +15,7 @@ const Card = (props) => {
         )}
       </div>
       <p className="text-center">
-        {props.cardIndex}/{props.totalCards}
+        {props.totalCards > 0 ? `${props.cardIndex}/${props.totalCards}` : null}
       </p>
     </div>
   );

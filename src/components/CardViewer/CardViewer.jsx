@@ -31,10 +31,17 @@ const CardViewer = (props) => {
       />
       <Button
         btnType="button"
-        btnStyle="btn btn-outline-warning"
+        btnStyle="btn btn-outline-primary"
         clickAction={props.toggleVisibility}
         useParams="showDecks"
-        text="Change Deck"
+        text="Switch Deck"
+      />
+      <Button
+        btnType="button"
+        btnStyle="btn btn-outline-danger"
+        clickAction={props.callDeleteCard}
+        useParams={props.activeCard}
+        text="Delete Card"
       />
     </>
   );
