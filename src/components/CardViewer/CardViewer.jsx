@@ -27,14 +27,14 @@ const CardViewer = (props) => {
         btnStyle="btn btn-outline-success"
         clickAction={props.toggleVisibility}
         useParams="showNewCard"
-        text="Add new cards"
+        text="Add card"
       />
       <Button
         btnType="button"
         btnStyle="btn btn-outline-warning"
         clickAction={props.toggleVisibility}
         useParams="showDecks"
-        text="Switch Decks"
+        text="Change Deck"
       />
     </>
   );

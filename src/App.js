@@ -63,7 +63,17 @@ class App extends Component {
         }
         this.toggleVisibility("showNewDeck");
         break;
-
+      case "submitCard":
+        const newCard = {
+          word: this.state.word,
+          definition: this.state.definition,
+        };
+        this.setNewCard(newCard);
+        this.setState({
+          activeCard: this.state.activeCards.length,
+        });
+        this.toggleVisibility("showNewCard");
+        break;
       default:
         break;
     }
@@ -111,9 +121,8 @@ class App extends Component {
         break;
       case "showNewCard":
         this.setState({
-          // [component]: !this.state[component],
-          showNewCard: true,
-          showCard: false,
+          [component]: !this.state[component],
+          showCard: !this.state.showCard,
         });
         break;
 
@@ -265,10 +274,13 @@ class App extends Component {
 
   async setNewCard(newCard) {
     try {
-      const response = await this.postNewCard(this.state.mainEndpoint, newCard);
+      const response = await this.postNewCard(
+        this.state.mainEndpoint,
+        this.state.activeDeck,
+        newCard
+      );
       this.setState({
-        activeCards: [response.data],
-        activeCard: this.state.activeCards.length + 1,
+        activeCards: response.data,
       });
     } catch (error) {
       console.log(error);
@@ -319,13 +331,9 @@ class App extends Component {
         ) : null}
         {this.state.showNewCard === true ? (
           <CardCreator
-            setNewDeck={(deck) => this.setNewDeck(deck)}
-            toggleVisibility={(component) => this.toggleVisibility(component)}
+            activeDeck={this.state.activeDeck}
             handleChange={(ev) => this.handleChange(ev)}
             handleSubmit={(ev) => this.handleSubmit(ev)}
-            addMoreCards={() => this.addMoreCards()}
-            showAddCards={this.state.showAddCards}
-            cards={this.state.cards}
             word={this.state.word}
             definition={this.state.definition}
           />
