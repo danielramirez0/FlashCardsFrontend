@@ -40,7 +40,7 @@ class App extends Component {
       case "submitDeck":
         if (this.state.technology !== "") {
           const deck = {
-            technology: this.state.technology,
+            technology: this.state.technology.toString(),
             cards: this.state.cards,
           };
           if (
@@ -49,8 +49,8 @@ class App extends Component {
             this.state.definition !== ""
           ) {
             const newCard = {
-              word: this.state.word,
-              definition: this.state.definition,
+              word: this.state.word.toString(),
+              definition: this.state.definition.toString(),
             };
             deck.cards = [...deck.cards, newCard];
           }
@@ -66,8 +66,8 @@ class App extends Component {
         break;
       case "submitCard":
         const newCard = {
-          word: this.state.word,
-          definition: this.state.definition,
+          word: this.state.word.toString(),
+          definition: this.state.definition.toString(),
         };
         this.setNewCard(newCard);
         this.setState({
@@ -92,8 +92,8 @@ class App extends Component {
   addMoreCards() {
     if (this.state.word !== "" && this.state.definition !== "") {
       const newCard = {
-        word: this.state.word,
-        definition: this.state.definition,
+        word: this.state.word.toString(),
+        definition: this.state.definition.toString(),
       };
       this.setState({
         cards: [...this.state.cards, newCard],
