@@ -67,7 +67,7 @@ class App extends Component {
         this.toggleVisibility("showNewDeck");
         break;
       case "submitCard":
-        const newCard = {
+        let newCard = {
           word: this.state.word.toString(),
           definition: this.state.definition.toString(),
         };
@@ -78,6 +78,18 @@ class App extends Component {
           definition: "",
         });
         this.toggleVisibility("showNewCard");
+        break;
+      case "updateTable":
+        const addCard = {
+          word: this.state.word.toString(),
+          definition: this.state.definition.toString(),
+        };
+        this.setNewCard(addCard);
+        this.setState({
+          word: "",
+          definition: "",
+        });
+        this.toggleVisibility("addCardToTable");
         break;
       case "changeDeck":
         break;
@@ -138,6 +150,11 @@ class App extends Component {
         this.setState({
           [component]: !this.state[component],
           showDecks: !this.state.showDecks,
+        });
+        break;
+      case "addCardToTable":
+        this.setState({
+          showNewCard: !this.state.showNewCard,
         });
         break;
       default:
@@ -265,6 +282,7 @@ class App extends Component {
       this.setState({
         activeDeck: deck,
         activeCards: response.data,
+        cards: response.data,
       });
     } catch (error) {
       console.log(error);
@@ -454,6 +472,7 @@ class App extends Component {
           <CardCreator
             toggleVisibility={(component) => this.toggleVisibility(component)}
             activeDeck={this.state.activeDeck}
+            submitTarget={this.state.showEditDeck === true ? "updateTable" : "submitCard"}
             handleChange={(ev) => this.handleChange(ev)}
             handleSubmit={(ev) => this.handleSubmit(ev)}
             word={this.state.word}

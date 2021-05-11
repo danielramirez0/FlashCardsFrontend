@@ -37,7 +37,7 @@ const CardViewer = (props) => {
         btnStyle="btn btn-outline-success"
         clickAction={props.toggleVisibility}
         useParams="showNewCard"
-        text="Add card"
+        text="Add new card"
       />
       <Button
         btnType="button"

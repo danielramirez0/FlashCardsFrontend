@@ -31,13 +31,7 @@ const EditDeckForm = (props) => {
           />
         </div>
         <div className="">
-          <Button
-            btnType="button"
-            btnStyle="btn btn-success"
-            // clickAction={() => props.toggleVisibility("resetUI")}
-            text="Add Cards"
-          />
-          <h6>Cards In Deck</h6>
+          <h6 className="text-center">Cards In Deck</h6>
           <table className="table table-dark table-striped">
             <thead>
               <tr>
@@ -64,6 +58,20 @@ const EditDeckForm = (props) => {
                   </td>
                 </tr>
               ))}
+              <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                  <Button
+                    btnType="button"
+                    btnStyle="btn btn-success"
+                    clickAction={props.toggleVisibility}
+                    useParams={"addCardToTable"}
+                    text="Add card"
+                  />
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>

@@ -6,7 +6,7 @@ const CardCreator = (props) => {
     <>
       <Title type="Subtitle" subtext={`Add New Card Form:`} />
       <Title extratext={`Deck:  ${props.activeDeck.technology}`} />
-      <form name="submitCard" onSubmit={(event) => props.handleSubmit(event)} className="">
+      <form name={props.submitTarget} onSubmit={(event) => props.handleSubmit(event)} className="">
         <div className="input-group">
           <label htmlFor="inputCard" className="col-sm-2 col-form-label">
             New Card To Add:
