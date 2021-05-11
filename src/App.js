@@ -63,35 +63,46 @@ class App extends Component {
             definition: "",
             cards: [],
           });
+          this.toggleVisibility("showNewDeck");
         }
-        this.toggleVisibility("showNewDeck");
         break;
       case "submitCard":
-        let newCard = {
-          word: this.state.word.toString(),
-          definition: this.state.definition.toString(),
-        };
-        this.setNewCard(newCard);
-        this.setState({
-          activeCardIndex: this.state.activeCards.length,
-          word: "",
-          definition: "",
-        });
-        this.toggleVisibility("showNewCard");
+        if (this.state.word !== "" && this.state.definition !== "") {
+          const newCard = {
+            word: this.state.word.toString(),
+            definition: this.state.definition.toString(),
+          };
+          this.setNewCard(newCard);
+          this.setState({
+            activeCardIndex: this.state.activeCards.length,
+            word: "",
+            definition: "",
+          });
+          this.toggleVisibility("showNewCard");
+        }
         break;
       case "updateTable":
-        const addCard = {
-          word: this.state.word.toString(),
-          definition: this.state.definition.toString(),
-        };
-        this.setNewCard(addCard);
-        this.setState({
-          word: "",
-          definition: "",
-        });
+        if (this.state.word !== "" && this.state.definition !== "") {
+          const newCard = {
+            word: this.state.word.toString(),
+            definition: this.state.definition.toString(),
+          };
+          this.setNewCard(newCard);
+          this.setState({
+            word: "",
+            definition: "",
+          });
+        }
         this.toggleVisibility("addCardToTable");
         break;
       case "changeDeck":
+        const deck = this.state.activeDeck;
+        if (this.state.technology !== "") {
+          deck.technology = this.state.technology;
+        }
+        deck.cards = this.state.activeCards;
+        this.changeDeck(deck);
+        this.toggleVisibility("resetUI");
         break;
       default:
         break;
@@ -248,9 +259,12 @@ class App extends Component {
     }
   }
 
-  putChangesToDeck(endpoint, deckID) {
+  putChangesToDeck(endpoint, deckID, deck) {
     return new Promise((res, rej) => {
-      const response = axios.put(`${endpoint}/${deckID}`);
+      const response = axios.put(`${endpoint}/${deckID}`, {
+        technology: deck.technology,
+        cards: deck.cards,
+      });
       if (response != null) {
         res(response);
       } else {
@@ -261,16 +275,10 @@ class App extends Component {
 
   async changeDeck(deck) {
     try {
-      // const response = await this.putChangesToDeck(this.state.mainEndpoint, deck);
-      const isTargetCallback = (element) => element._id === deck._id;
-      const targetIndex = this.state.decks.findIndex(isTargetCallback);
-      const extractedDeck = this.state.decks.filter((item) => {
-        return item._id === deck._id;
-      });
-      console.log(extractedDeck);
-      // this.setState({
-      //   decks: newDecks,
-      // });
+      const response = await this.putChangesToDeck(this.state.mainEndpoint, deck._id, deck);
+      if (response.data.technology === deck.technology) {
+        this.setAllDecks();
+      }
     } catch (error) {
       console.log(error);
     }
