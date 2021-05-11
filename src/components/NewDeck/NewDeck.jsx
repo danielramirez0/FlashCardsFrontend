@@ -1,5 +1,6 @@
 import React from "react";
 import Title from "../Title/Title";
+import Button from "../Button/Button";
 
 const NewDeck = (props) => {
   const cards = props.cards;
@@ -83,6 +84,12 @@ const NewDeck = (props) => {
           </div>
         </div>
       </form>
+      <Button
+        btnType="button"
+        btnStyle="btn btn-danger"
+        clickAction={() => props.toggleVisibility("resetUI")}
+        text="Cancel"
+      />
     </>
   );
 };

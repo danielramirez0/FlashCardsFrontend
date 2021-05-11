@@ -24,6 +24,13 @@ const Decks = (props) => {
               >
                 Delete
               </button>
+              <button
+                type="button"
+                className="btn btn-outline-warning"
+                onClick={() => props.setEditDeckForm(deck)}
+              >
+                Edit Deck
+              </button>
             </div>
           </div>
         ))}

@@ -4,6 +4,7 @@ import Decks from "./components/Decks/Decks";
 import NewDeck from "./components/NewDeck/NewDeck";
 import CardViewer from "./components/CardViewer/CardViewer";
 import CardCreator from "./components/CardCreator/CardCreator";
+import EditDeckForm from "./components/EditDeckForm/EditDeckForm";
 
 const axios = require("axios");
 
@@ -15,18 +16,19 @@ class App extends Component {
       decks: [],
       showDecks: true,
       showNewDeck: false,
-      showNewCard: false,
+      showEditDeck: false,
       showCard: false,
+      showNewCard: false,
+      showAddCards: false,
+      showAnswer: false,
       activeDeck: {},
       activeCard: {},
       activeCardIndex: 0,
-      showAnswer: false,
       activeCards: [],
       technology: "",
       cards: [],
       word: "",
       definition: "",
-      showAddCards: false,
     };
   }
 
@@ -76,6 +78,8 @@ class App extends Component {
           definition: "",
         });
         this.toggleVisibility("showNewCard");
+        break;
+      case "changeDeck":
         break;
       default:
         break;
@@ -130,10 +134,29 @@ class App extends Component {
           showCard: !this.state.showCard,
         });
         break;
-
-      default:
+      case "showEditDeck":
         this.setState({
           [component]: !this.state[component],
+          showDecks: !this.state.showDecks,
+        });
+        break;
+      default:
+        this.setState({
+          showDecks: true,
+          showNewDeck: false,
+          showEditDeck: false,
+          showCard: false,
+          showNewCard: false,
+          showAddCards: false,
+          showAnswer: false,
+          activeDeck: {},
+          activeCard: {},
+          activeCardIndex: 0,
+          activeCards: [],
+          technology: "",
+          cards: [],
+          word: "",
+          definition: "",
         });
         break;
     }
@@ -208,6 +231,46 @@ class App extends Component {
     }
   }
 
+  putChangesToDeck(endpoint, deckID) {
+    return new Promise((res, rej) => {
+      const response = axios.put(`${endpoint}/${deckID}`);
+      if (response != null) {
+        res(response);
+      } else {
+        rej(new Error(`Unable to update deck at ${endpoint} with ID ${deckID}`));
+      }
+    });
+  }
+
+  async changeDeck(deck) {
+    try {
+      // const response = await this.putChangesToDeck(this.state.mainEndpoint, deck);
+      const isTargetCallback = (element) => element._id === deck._id;
+      const targetIndex = this.state.decks.findIndex(isTargetCallback);
+      const extractedDeck = this.state.decks.filter((item) => {
+        return item._id === deck._id;
+      });
+      console.log(extractedDeck);
+      // this.setState({
+      //   decks: newDecks,
+      // });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async setEditDeckForm(deck) {
+    try {
+      const response = await this.getDeckCards(this.state.mainEndpoint, deck);
+      this.setState({
+        activeDeck: deck,
+        activeCards: response.data,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+    this.toggleVisibility("showEditDeck");
+  }
   goToPreviousCard() {
     let tempCardNumber = this.state.activeCardIndex;
     tempCardNumber--;
@@ -336,8 +399,23 @@ class App extends Component {
           <Decks
             data={this.state.decks}
             callDeleteDeck={(id) => this.callDeleteDeck(id)}
+            setEditDeckForm={(deck) => this.setEditDeckForm(deck)}
             toggleVisibility={(component) => this.toggleVisibility(component)}
             setCardViewer={(deck) => this.setCardViewer(deck)}
+            changeDeck={(deck) => this.changeDeck(deck)}
+          />
+        ) : null}
+
+        {this.state.showEditDeck === true ? (
+          <EditDeckForm
+            callDeleteCard={(card) => this.callDeleteCard(card)}
+            toggleVisibility={(component) => this.toggleVisibility(component)}
+            handleChange={(ev) => this.handleChange(ev)}
+            handleSubmit={(ev) => this.handleSubmit(ev)}
+            activeDeck={this.state.activeDeck}
+            activeCards={this.state.activeCards}
+            word={this.state.word}
+            definition={this.state.definition}
           />
         ) : null}
         {this.state.showNewDeck === true ? (
@@ -374,6 +452,7 @@ class App extends Component {
         ) : null}
         {this.state.showNewCard === true ? (
           <CardCreator
+            toggleVisibility={(component) => this.toggleVisibility(component)}
             activeDeck={this.state.activeDeck}
             handleChange={(ev) => this.handleChange(ev)}
             handleSubmit={(ev) => this.handleSubmit(ev)}
