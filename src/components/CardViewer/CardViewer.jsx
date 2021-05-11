@@ -53,6 +53,56 @@ const CardViewer = (props) => {
         useParams={props.activeCard}
         text="Delete Card"
       />
+      <Button
+        btnType="button"
+        btnStyle="btn btn-outline-warning"
+        clickAction={props.toggleVisibility}
+        useParams="showCardEdit"
+        text="Edit this card"
+      />
+      {props.showCardEdit !== false ? (
+        <form
+          name={props.submitTarget}
+          onSubmit={(event) => props.handleSubmit(event)}
+          className=""
+        >
+          <div className="input-group">
+            <label htmlFor="inputCard" className="col-sm-2 col-form-label">
+              Update Card:
+            </label>
+            <span id="inputCard" className="input-group-text">
+              Question:
+            </span>
+            <input
+              type="text"
+              className="form-control"
+              name="word"
+              onChange={(event) => props.handleChange(event)}
+              value={props.word}
+              id="inputWord"
+              placeholder="Enter word to add"
+              // ref={(input) => (this.inputWord = input)}
+            />
+            <span className="input-group-text">Answer:</span>
+            <input
+              type="text"
+              className="form-control"
+              name="definition"
+              onChange={(event) => props.handleChange(event)}
+              value={props.definition}
+              id="inputDefinition"
+              placeholder="Enter definition for word"
+            />
+          </div>
+          <div className="form-group row">
+            <div className="col-sm-10 ">
+              <button type="submit" className="btn btn-primary">
+                Submit Card
+              </button>
+            </div>
+          </div>
+        </form>
+      ) : null}
     </>
   );
 };

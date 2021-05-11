@@ -21,6 +21,7 @@ class App extends Component {
       showNewCard: false,
       showAddCards: false,
       showAnswer: false,
+      showCardEdit: false,
       activeDeck: {},
       activeCard: {},
       activeCardIndex: 0,
@@ -104,6 +105,15 @@ class App extends Component {
         this.changeDeck(deck);
         this.toggleVisibility("resetUI");
         break;
+      case "updateCard":
+        if (this.state.word !== "" && this.state.definition !== "") {
+          const cardID = this.state.activeCard._id;
+          const updateCard = {
+            word: this.state.word.toString(),
+            definition: this.state.definition.toString(),
+          };
+          const deckID = this.state.activeDeck._id;
+        }
       default:
         break;
     }
@@ -166,6 +176,11 @@ class App extends Component {
       case "addCardToTable":
         this.setState({
           showNewCard: !this.state.showNewCard,
+        });
+        break;
+      case "showCardEdit":
+        this.setState({
+          [component]: !this.state[component],
         });
         break;
       default:
@@ -417,6 +432,8 @@ class App extends Component {
     }
   }
 
+  // TODO: putChangesToCard;
+
   render() {
     return (
       <div className="container justify-content-center">
@@ -469,10 +486,14 @@ class App extends Component {
               flipCard={() => this.flipCard()}
               callDeleteCard={(card) => this.callDeleteCard(card)}
               showAnswer={this.state.showAnswer}
+              showCardEdit={this.state.showCardEdit}
               totalCards={this.state.activeCards.length}
               cardIndex={this.state.activeCardIndex + 1}
               setNewCard={() => this.setNewCard()}
               toggleVisibility={(component) => this.toggleVisibility(component)}
+              handleChange={(ev) => this.handleChange(ev)}
+              handleSubmit={(ev) => this.handleSubmit(ev)}
+              submitTarget={"updateCard"}
             />
           </>
         ) : null}
